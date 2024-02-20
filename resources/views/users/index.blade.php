@@ -7,31 +7,35 @@
       <th scope="col">ID</th>
       <th scope="col">Name</th>
       <th scope="col">Email</th>
+      <th scope="col">no of posts</th>
       <th scope="col">Actions</th>
       
     </tr>
 </thead>
 
 
-  @foreach($users as $id)
+  @foreach($users as $user)
     <tr>
       
       <td>
        
-         {{$id-> id}}
+         {{$user-> id}}
        
       </td>
 
       <td>
         
-           {{$id-> name}}
+           {{$user-> name}}
        
       </td>
-      <td>{{$id-> email}}</td>
+      <td>{{$user-> email}}</td>
+     
+      <td>{{ $user['posts_count'] }} </td>
+     
       <td>
-                <button class="btn btn-success"><a href= "{{route('users.show',['id'=>$id['id']]) }}" class="text-light"> Show   </a></button>
-                <button class="btn btn-primary"><a href="{{route('users.edit',['id'=>$id['id']]) }}" class="text-light"> update </a></button>
-                <form action="{{ route('users.delete',[ 'id'=>$id['id']]) }}" method="POST" class="d-inline">
+                <button class="btn btn-success"><a href= "{{route('users.show',['id'=>$user['id']]) }}" class="text-light"> Show   </a></button>
+                <button class="btn btn-primary"><a href="{{route('users.edit',['id'=>$user['id']]) }}" class="text-light"> update </a></button>
+                <form action="{{ route('users.delete',[ 'id'=>$user['id']]) }}" method="POST" class="d-inline">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">Delete</button>
@@ -39,7 +43,8 @@
       </td>
     </tr>
     <tr>
-
+    
+    
    @endforeach
 </table>
 @endsection

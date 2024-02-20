@@ -4,14 +4,15 @@
 @section('content')
 <div class="card text-center">
     <div class="card-header">
-        Post
+    {{$postData->title}}
     </div>
     <div class="card-body">
-        <h5 class="card-title">{{$postData->title}}</h5>
+      
         <p class="card-text">{{$postData->body}}</p>
-       
-        <img src="{{ Storage::disk('public')->url($postData->image) }}" class="d-block" alt="" style="width:120px; height: 120px; object-fit: cover;">
-        
+      
+        <img src="{{asset(str_replace('public/','storage/', $postData->img))}}" alt="" width="300">
+        <br>
+        <br>
         <a href="{{ route('users.show', ['id'=>$postData->user->id], false) }}" class="btn btn-primary">{{$postData->user->name}}</a>
     </div>
     <div class="card-footer text-body-secondary">

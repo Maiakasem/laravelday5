@@ -8,12 +8,14 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
     public function index(){
-       
+        $users=User::withCount('posts')->paginate(10);
+     
         $id=User::all();
-        return view('users.index',['users'=>$id]);
+        return view('users.index',['users'=>$users]);
     }
 
     public function show( $id){
+        $data=User::with('posts')->whereId($id)->get();
         $id=User::find($id);
         return view('users.show',['user'=>$id]);
         

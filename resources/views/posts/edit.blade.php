@@ -21,12 +21,7 @@
     </div>
 
     <div class="col-sm-3">
-        <label class="">Choose User</label>
-        <select class="form-select" id="specificSizeSelect" name="user_id">
-            @foreach ($users as $user)
-            <option value="{{ $user['id'] }}" {{ ($postData->user_id == $user->id)? 'selected' : ''}}>{{$user['name']}}</option>
-            @endforeach
-        </select>
+    <input type="text" name="user_id" value="{{ $loggedInUser->id }}" hidden >
     </div>
     <div class="form-group">
         <input type="file" name="img">

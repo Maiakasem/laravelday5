@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -24,8 +25,9 @@ class PostController extends Controller
      */
     public function create()
     {
+        $loggedInUser = Auth::user();
         $users = User::all();
-        return view('posts.create', ['users'=>$users]);
+        return view('posts.create', ['loggedInUser'=>$loggedInUser]);
     }
 
     /**
@@ -39,10 +41,14 @@ class PostController extends Controller
             'user_id' => 'required|exists:users,id',
             'img'=> 'required|max:1024|image',
         ]);
-        $fileName=Storage::putFile('public/postImgs',$data['img']);
-        $data['img']=$fileName;
+        $fileName = Storage::putFile('public/posts',$data['img']);   // putFileAs() to choose a name for the file
+        $data['img'] = $fileName ;
         $data['slug'] = Str::slug($data['title']);
-        $post=post::create($data);
+
+
+        $post = Post::create($data);
+        
+        event(new \App\Events\countPosts($post));
         return redirect()->route('posts.index');
     }
 
@@ -52,7 +58,10 @@ class PostController extends Controller
     public function show(string $id)
     {
         $postData = Post::where('id', $id)->first();
+       
+        
         return view('posts.show', ['postData' => $postData]);
+        
     }
 
     /**
@@ -62,7 +71,14 @@ class PostController extends Controller
     {
         $postData = Post::where('id', $id)->first();
         $users = User::all();
-        return view('posts.edit', ['postData'=>$postData, 'users'=>$users]);
+        $user_id=$postData->user_id;
+        $loggedInUser = Auth::user();
+        if ($loggedInUser->id != $user_id) {
+            return redirect()->route('posts.index');
+        } else {
+            return view('posts.edit', ['postData'=>$postData, 'loggedInUser'=>$loggedInUser]);
+        }
+        
     }
 
     /**
@@ -77,7 +93,7 @@ class PostController extends Controller
             
         ]);
         $post = Post::find($id);
-        if ($request->hasFile ( 'img' )){
+        if ($request->hasFile( 'img' )){
             Storage::delete($post->img);
             $path = $request->file('img')->store('postImgs', 'public');
             
@@ -98,7 +114,6 @@ class PostController extends Controller
     {
         
         $post = Post::find($id);
-        Storage::delete($post->img);
         $post->delete();
         return redirect()->route('posts.index');
     }

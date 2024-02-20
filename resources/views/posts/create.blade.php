@@ -21,12 +21,8 @@
         </div>
 
         <div class="form-group">
-        <label class="">Choose User</label>
-        <select class="form-select" id="specificSizeSelect" name="user_id">
-            @foreach ($users as $user)
-            <option value="{{ $user['id'] }}">{{$user['name']}}</option>
-            @endforeach
-        </select>
+        
+        
         @error('user_id')
                 <span class="text-danger">{{ $message }}</span>
         @enderror
@@ -38,6 +34,10 @@
                 <span class="text-danger">{{ $message }}</span>
         @enderror
         <br>
+        <div class="col-sm-3 mt-4">
+            <input type="text" name="user_id" value="{{ $loggedInUser->id }}" hidden >
+            
+        </div>
         <button type="submit" class="btn btn-primary mt-4">Create</button>
 </form>
 @endsection
